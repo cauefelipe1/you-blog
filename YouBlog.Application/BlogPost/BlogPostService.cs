@@ -59,8 +59,8 @@ public class BlogPostService : IBlogPostService
             Id = dao.Id,
             Title = dao.Title,
             Content = dao.Content,
-            CreatedAt = dao.CreatedAt,
-            UpdatedAt = dao.UpdatedAt,
+            CreatedAt = dao.CreatedAt ?? DateTimeOffset.Now,
+            UpdatedAt = DateTimeOffset.Now,
             TotalComments = dao.Comments?.Count ?? 0,
             Comments = dao.Comments?.Select(comment => BuildCommentModel(comment)).ToList()
         };
@@ -71,7 +71,7 @@ public class BlogPostService : IBlogPostService
     {
         return new BlogPostDAO
         {
-            Id = model.Id,
+            Id = model.Id == 0 ? null : model.Id,
             Title = model.Title,
             Content = model.Content,
             CreatedAt = model.CreatedAt,
@@ -84,7 +84,7 @@ public class BlogPostService : IBlogPostService
     {
         return new CommentDAO
         {
-            Id = model.Id,
+            Id = model.Id == 0 ? null : model.Id,
             Author = model.Author,
             Content = model.Content,
             CreatedAt = model.CreatedAt ?? DateTimeOffset.Now,

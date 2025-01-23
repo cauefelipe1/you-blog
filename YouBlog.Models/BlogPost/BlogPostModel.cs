@@ -23,12 +23,12 @@ namespace YouBlog.Models.BlogPost
         /// <summary>
         /// The date and time when the blog post was created.
         /// </summary>
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
     
         /// <summary>
         /// The date and time when the blog post was last updated.
         /// </summary>
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
         
         /// <summary>
         /// The amount of comments associated with the blog post.

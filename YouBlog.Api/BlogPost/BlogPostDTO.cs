@@ -46,8 +46,8 @@ public class CommentDTO
     /// </summary>
     public string Content { get; set; }
 
-    /// <summary>
-    /// The unique identifier of the blog post that the comment is associated with.
-    /// </summary>
-    public long? BlogPostId { get; set; }
+    // /// <summary>
+    // /// The unique identifier of the blog post that the comment is associated with.
+    // /// </summary>
+    // public long? BlogPostId { get; set; }
 }

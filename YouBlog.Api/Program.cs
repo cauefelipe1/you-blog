@@ -1,3 +1,7 @@
+using YouBlog.Application.BlogPost;
+using YouBlog.Infrastructure.BlogPost;
+using YouBlog.Infrastructure.Database;
+
 namespace YouBlog.Api;
 
 public class Program
@@ -12,6 +16,11 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+
+        builder.Services.AddDbContext<YouBlogDbContext>();
+        builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+        builder.Services.AddScoped<IBlogPostService, BlogPostService>();
 
         var app = builder.Build();
 

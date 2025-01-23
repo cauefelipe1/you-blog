@@ -8,7 +8,7 @@ namespace YouBlog.Api.BlogPost
     [ApiController]
     [Route("api/posts")]
     public class BlogPostController : ControllerBase
-    {
+    {   
         private readonly IBlogPostService _service;
         
         public BlogPostController(IBlogPostService service)
@@ -25,12 +25,12 @@ namespace YouBlog.Api.BlogPost
         }
 
         [HttpPost]
-        public ActionResult<BlogPostModel> CreatePost([FromBody] BlogPostDTO newPostModel)
+        public async Task<ActionResult<BlogPostModel>> CreatePost([FromBody] BlogPostDTO newPostModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var createdPost = _service.Create(newPostModel.ToModel());
+            var createdPost = await _service.Create(newPostModel.ToModel());
             
             return CreatedAtAction(
                 nameof(GetPostById), 
@@ -52,7 +52,7 @@ namespace YouBlog.Api.BlogPost
             return Ok(post);
         }
 
-        [HttpPost("{blogpostId}/comments")]
+        [HttpPost("{id}/comments")]
         public async Task<ActionResult<CommentModel>> AddComment(
             [FromRoute(Name = "id")] long blogpostId,
             [FromBody] CommentDTO newComment)

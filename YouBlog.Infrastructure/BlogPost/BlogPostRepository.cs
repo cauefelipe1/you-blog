@@ -74,6 +74,7 @@ public class BlogPostRepository : IBlogPostRepository
 
         blogPost.Comments ??= new();
         
+        comment.BlogPostId = blogPostId;
         blogPost.Comments.Add(comment);
         await _context.SaveChangesAsync();
         return comment;

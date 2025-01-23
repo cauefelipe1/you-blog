@@ -23,7 +23,7 @@ public static class DTOsExtensions
             Id = dto.Id,
             Author = dto.Author,
             Content = dto.Content,
-            BlogPostId = dto.BlogPostId
+            // BlogPostId = dto.BlogPostId
         };
     }
 }
