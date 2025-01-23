@@ -19,11 +19,6 @@ public class BlogPostDTO
     /// The content of the blog post.
     /// </summary>
     public string Content { get; set; }
-
-    /// <summary>
-    /// The list of comments associated with the blog post.
-    /// </summary>
-    public List<CommentDTO>? Comments { get; set; }
 }
 
 /// <summary>
@@ -45,9 +40,4 @@ public class CommentDTO
     /// The content of the comment.
     /// </summary>
     public string Content { get; set; }
-
-    // /// <summary>
-    // /// The unique identifier of the blog post that the comment is associated with.
-    // /// </summary>
-    // public long? BlogPostId { get; set; }
 }
