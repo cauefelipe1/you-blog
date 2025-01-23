@@ -24,24 +24,12 @@ public class YouBlogDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                
-            // entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
-            // entity.Property(e => e.Content).IsRequired();
-            // entity.Property(e => e.CreatedAt).IsRequired();
-            // entity.Property(e => e.UpdatedAt).IsRequired();
-            // entity.HasMany(e => e.Comments)
-            //     .WithOne()
-            //     .HasForeignKey(c => c.BlogPostId)
-            //     .OnDelete(DeleteBehavior.Cascade);
         });
     
         modelBuilder.Entity<CommentDAO>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            // entity.Property(e => e.Content).IsRequired();
-            // entity.Property(e => e.CreatedAt).IsRequired();
-            // entity.Property(e => e.BlogPostId).IsRequired();
         });
     }
 }
