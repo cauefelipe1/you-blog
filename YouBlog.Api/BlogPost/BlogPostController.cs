@@ -17,6 +17,7 @@ namespace YouBlog.Api.BlogPost
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<BlogPostModel>), 200)]
         public async Task<ActionResult<IEnumerable<BlogPostModel>>> GetAllPosts()
         {
             var posts = await _service.GetAll();
@@ -25,6 +26,8 @@ namespace YouBlog.Api.BlogPost
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(BlogPostModel), 200)]
+        [ProducesResponseType(400)]
         public async Task<ActionResult<BlogPostModel>> CreatePost([FromBody] BlogPostDTO newPostModel)
         {
             if (!ModelState.IsValid)
@@ -39,6 +42,9 @@ namespace YouBlog.Api.BlogPost
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(BlogPostModel), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<BlogPostModel>> GetPostById(long id)
         {
             if (id <= 0)
@@ -53,6 +59,8 @@ namespace YouBlog.Api.BlogPost
         }
 
         [HttpPost("{id}/comments")]
+        [ProducesResponseType(typeof(CommentModel), 200)]
+        [ProducesResponseType(400)]
         public async Task<ActionResult<CommentModel>> AddComment(
             [FromRoute(Name = "id")] long blogpostId,
             [FromBody] CommentDTO newComment)
