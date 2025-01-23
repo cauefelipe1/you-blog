@@ -35,4 +35,12 @@ public interface IBlogPostRepository
     /// </summary>
     /// <param name="id">The ID of the blog post to delete.</param>
     Task Delete(long id);
+
+    /// <summary>
+    /// Adds a comment to a blog post.
+    /// </summary>
+    /// <param name="blogPostId">The ID of the blog post to add the comment to.</param>
+    /// <param name="comment">The comment to add.</param>
+    /// <returns>The added CommentDAO.</returns>
+    Task<CommentDAO?> AddComment(long blogPostId, CommentDAO comment);
 }

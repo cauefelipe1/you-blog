@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using YouBlog.Api.Extensions;
 using YouBlog.Application.BlogPost;
 using YouBlog.Models.BlogPost;
 
@@ -24,43 +25,52 @@ namespace YouBlog.Api.BlogPost
         }
 
         [HttpPost]
-        public ActionResult<BlogPostModel> CreatePost([FromBody] BlogPostModel newPostModel)
+        public ActionResult<BlogPostModel> CreatePost([FromBody] BlogPostDTO newPostModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var createdPost = _blogPostDAO.Create(newPostModel);
+            var createdPost = _service.Create(newPostModel.ToModel());
             
-            return CreatedAtAction(nameof(GetPostById), new { id = createdPost.Id }, createdPost);
+            return CreatedAtAction(
+                nameof(GetPostById), 
+                new { id = createdPost.Id }, 
+                createdPost);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<BlogPostModel> GetPostById(long id)
+        public async Task<ActionResult<BlogPostModel>> GetPostById(long id)
         {
-            var post = _blogPostDAO.GetById(id);
-            if (post == null)
-            {
+            if (id <= 0)
+                return BadRequest();
+
+            var post = await _service.GetById(id);
+            
+            if (post is null)
                 return NotFound();
-            }
 
             return Ok(post);
         }
 
-        [HttpPost("{id}/comments")]
-        public ActionResult<CommentModel> AddComment(long id, [FromBody] CommentModel newCommentModel)
+        [HttpPost("{blogpostId}/comments")]
+        public async Task<ActionResult<CommentModel>> AddComment(
+            [FromRoute(Name = "id")] long blogpostId,
+            [FromBody] CommentDTO newComment)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var post = _blogPostDAO.GetById(id);
-            if (post == null)
+            try
             {
-                return NotFound();
+                var comment = await _service.AddComment(blogpostId, newComment.ToModel());
+                
+                return CreatedAtAction(nameof(GetPostById), new { id = blogpostId }, comment);
             }
-
-            newCommentModel.BlogPostId = id;
-            var createdComment = _blogPostDAO.AddComment(newCommentModel);
-            return CreatedAtAction(nameof(GetPostById), new { id = id }, createdComment);
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest();
+            }
         }
     }
 }

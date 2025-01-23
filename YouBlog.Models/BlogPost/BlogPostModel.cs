@@ -8,7 +8,7 @@ namespace YouBlog.Models.BlogPost
         /// <summary>
         /// The unique identifier for the blog post.
         /// </summary>
-        public long Id { get; set; }
+        public long? Id { get; set; }
     
         /// <summary>
         /// The title of the blog post.
@@ -49,7 +49,7 @@ namespace YouBlog.Models.BlogPost
         /// <summary>
         /// The unique identifier for the comment.
         /// </summary>
-        public long Id { get; set; }
+        public long? Id { get; set; }
     
         /// <summary>
         /// The author of the comment.
@@ -64,11 +64,11 @@ namespace YouBlog.Models.BlogPost
         /// <summary>
         /// The date and time when the comment was created.
         /// </summary>
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
     
         /// <summary>
         /// The unique identifier of the blog post that the comment is associated with.
         /// </summary>
-        public long BlogPostId { get; set; }
+        public long? BlogPostId { get; set; }
     }
 }

@@ -63,4 +63,19 @@ public class BlogPostRepository : IBlogPostRepository
             await _context.SaveChangesAsync();
         }
     }
+    
+    /// <inheritdoc/>
+    public async Task<CommentDAO?> AddComment(long blogPostId, CommentDAO comment)
+    {
+        var blogPost = await _context.BlogPosts.Include(bp => bp.Comments).FirstOrDefaultAsync(bp => bp.Id == blogPostId);
+
+        if (blogPost is null)
+            throw new ArgumentException("Blog post not found.");
+
+        blogPost.Comments ??= new();
+        
+        blogPost.Comments.Add(comment);
+        await _context.SaveChangesAsync();
+        return comment;
+    }
 }

@@ -3,6 +3,9 @@ using YouBlog.Models.BlogPost;
 
 namespace YouBlog.Application.BlogPost;
 
+/// <summary>
+/// <see cref="IBlogPostService"/> implementation using the <see cref="IBlogPostService"/>.
+/// </summary>
 public class BlogPostService : IBlogPostService
 {
     private readonly IBlogPostRepository _repository;
@@ -12,18 +15,21 @@ public class BlogPostService : IBlogPostService
         _repository = repository;
     }
 
+    /// <inheritdoc/>
     public async Task<IEnumerable<BlogPostModel>> GetAll()
     {
         var daos = await _repository.GetAll();
         return daos.Select(BuildModel);
     }
 
-    public async Task<BlogPostModel> GetById(long id)
+    /// <inheritdoc/>
+    public async Task<BlogPostModel?> GetById(long id)
     {
         var dao = await _repository.GetById(id);
         return dao == null ? null : BuildModel(dao);
     }
 
+    /// <inheritdoc/>
     public async Task<BlogPostModel> Create(BlogPostModel blogPost)
     {
         var dao = BuildDAO(blogPost);
@@ -31,6 +37,7 @@ public class BlogPostService : IBlogPostService
         return BuildModel(createdDao);
     }
 
+    /// <inheritdoc/>
     public async Task<BlogPostModel> Update(long id, BlogPostModel blogPost)
     {
         var dao = BuildDAO(blogPost);
@@ -38,11 +45,13 @@ public class BlogPostService : IBlogPostService
         return updatedDao == null ? null : BuildModel(updatedDao);
     }
 
+    /// <inheritdoc/>
     public async Task Delete(long id)
     {
         await _repository.Delete(id);
     }
 
+    /// <inheritdoc/>
     private BlogPostModel BuildModel(BlogPostDAO dao)
     {
         return new BlogPostModel
@@ -53,17 +62,11 @@ public class BlogPostService : IBlogPostService
             CreatedAt = dao.CreatedAt,
             UpdatedAt = dao.UpdatedAt,
             TotalComments = dao.Comments?.Count ?? 0,
-            Comments = dao.Comments?.Select(comment => new CommentModel
-            {
-                Id = comment.Id,
-                Author = comment.Author,
-                Content = comment.Content,
-                CreatedAt = comment.CreatedAt,
-                BlogPostId = comment.BlogPostId
-            }).ToList()
+            Comments = dao.Comments?.Select(comment => BuildCommentModel(comment)).ToList()
         };
     }
 
+    /// <inheritdoc/>
     private BlogPostDAO BuildDAO(BlogPostModel model)
     {
         return new BlogPostDAO
@@ -73,14 +76,46 @@ public class BlogPostService : IBlogPostService
             Content = model.Content,
             CreatedAt = model.CreatedAt,
             UpdatedAt = model.UpdatedAt,
-            Comments = model.Comments?.Select(comment => new CommentDAO
-            {
-                Id = comment.Id,
-                Author = comment.Author,
-                Content = comment.Content,
-                CreatedAt = comment.CreatedAt,
-                BlogPostId = comment.BlogPostId
-            }).ToList()
+            Comments = model.Comments?.Select(comment => BuildCommentDAO(comment)).ToList()
         };
+    }
+    
+    private CommentDAO BuildCommentDAO(CommentModel model)
+    {
+        return new CommentDAO
+        {
+            Id = model.Id,
+            Author = model.Author,
+            Content = model.Content,
+            CreatedAt = model.CreatedAt ?? DateTimeOffset.Now,
+            BlogPostId = model.BlogPostId
+        };
+    }
+
+    private CommentModel BuildCommentModel(CommentDAO dao)
+    {
+        return new CommentModel
+        {
+            Id = dao.Id,
+            Author = dao.Author,
+            Content = dao.Content,
+            CreatedAt = dao.CreatedAt,
+            BlogPostId = dao.BlogPostId
+        };
+    }
+
+    /// <inheritdoc/>
+    public async Task<CommentModel?> AddComment(long blogPostId, CommentModel comment)
+    {
+        var commentDAO = BuildCommentDAO(comment);
+
+        var addedComment = await _repository.AddComment(blogPostId, commentDAO);
+        
+        if (addedComment is null)
+            return null;
+
+        var result = BuildCommentModel(addedComment);
+
+        return result;
     }
 }
